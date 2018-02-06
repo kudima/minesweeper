@@ -20,5 +20,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Be alert, some of the xpm files were produces from svg files of GNOME Mines project which 
-has its own license and I might have broken that one by converting them into xpm and publishing it online.
+Be alert, some of the xpm files were produced from svg files of GNOME Mines
+project which has its own license and I might have broken that one by converting
+them into xpm and publishing it online.
