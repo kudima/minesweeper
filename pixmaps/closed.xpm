@@ -1,3 +1,5 @@
+/* XPM */
+
 /*
  * MIT License
  *
@@ -22,7 +24,6 @@
  * SOFTWARE.
  */
 
-/* XPM */
 static char * closed_xpm[] = {
 "20 20 85 1",
 " 	c #C0BDBD",

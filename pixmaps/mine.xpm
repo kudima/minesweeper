@@ -1,3 +1,5 @@
+/* XPM */
+
 /*
  * Copyright (C) 2004 Callum McKenzie <callum@spooky-possum.org>
  *
@@ -15,7 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* XPM */
 static char * mine_xpm[] = {
 "20 20 132 2",
 "  	c None",

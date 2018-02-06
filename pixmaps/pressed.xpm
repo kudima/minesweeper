@@ -1,3 +1,5 @@
+/* XPM */
+
 /*
  * MIT License
  *
@@ -22,7 +24,6 @@
  * SOFTWARE.
  */
 
-/* XPM */
 static char * pressed_xpm[] = {
 "20 20 2 1",
 " 	c None",

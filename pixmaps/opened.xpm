@@ -1,3 +1,5 @@
+/* XPM */
+
 /*
  * MIT License
  *
@@ -22,7 +24,6 @@
  * SOFTWARE.
  */
 
-/* XPM */
 static char * opened_xpm[] = {
 "20 20 1 1",
 " 	c #ECE9E9",

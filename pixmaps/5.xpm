@@ -1,3 +1,5 @@
+/* XPM */
+
 /*
  * MIT License
  *
@@ -22,7 +24,6 @@
  * SOFTWARE.
  */
 
-/* XPM */
 static char * 5_xpm[] = {
 "20 20 87 1",
 " 	c #FFFFFF",
