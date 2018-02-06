@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2018 kudima
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <glib.h>
@@ -25,22 +49,12 @@
  Constansts which contains a pixmap files names
  */
 
-#if 1
 const gchar OPENED_XPM[] = "pixmaps/opened.xpm";
 const gchar MARKED_XPM[] = "pixmaps/marked.xpm";
 const gchar CLOSED_XPM[] = "pixmaps/closed.xpm";
 const gchar BOOM_XPM[] = "pixmaps/boom.xpm";
 const gchar MINE_XPM[] = "pixmaps/mine.xpm";
 const gchar PRESSED_XPM[] = "pixmaps/pressed.xpm";
-#else
-const gchar OPENED_XPM[] = "/home/dima/proc/miner/pixmaps/opened.xpm";
-const gchar MARKED_XPM[] = "/home/dima/proc/miner/pixmaps/marked.xpm";
-const gchar CLOSED_XPM[] = "/home/dima/proc/miner/pixmaps/closed.xpm";
-const gchar BOOM_XPM[] = "/home/dima/proc/miner/pixmaps/boom.xpm";
-const gchar MINE_XPM[] = "/home/dima/proc/miner/pixmaps/mine.xpm";
-const gchar PRESSED_XPM[] = "/home/dima/proc/miner/pixmaps/pressed.xpm";
-#endif
-
 /* Global variables */
 
 /* 
@@ -424,7 +438,7 @@ void menu_handler(GtkMenuItem *menuitem,
     gboolean is_field_state_changed = FALSE;
 
     df = main_window.df;
-    switch ((gint)data) {
+    switch ((enum menu_items)data) {
 	case MENU_GAME_QUIT:
 	    write_miner_config(&miner_config);
 	    gtk_main_quit();
