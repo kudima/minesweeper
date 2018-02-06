@@ -49,22 +49,12 @@
  Constansts which contains a pixmap files names
  */
 
-#if 1
 const gchar OPENED_XPM[] = "pixmaps/opened.xpm";
 const gchar MARKED_XPM[] = "pixmaps/marked.xpm";
 const gchar CLOSED_XPM[] = "pixmaps/closed.xpm";
 const gchar BOOM_XPM[] = "pixmaps/boom.xpm";
 const gchar MINE_XPM[] = "pixmaps/mine.xpm";
 const gchar PRESSED_XPM[] = "pixmaps/pressed.xpm";
-#else
-const gchar OPENED_XPM[] = "/home/dima/proc/miner/pixmaps/opened.xpm";
-const gchar MARKED_XPM[] = "/home/dima/proc/miner/pixmaps/marked.xpm";
-const gchar CLOSED_XPM[] = "/home/dima/proc/miner/pixmaps/closed.xpm";
-const gchar BOOM_XPM[] = "/home/dima/proc/miner/pixmaps/boom.xpm";
-const gchar MINE_XPM[] = "/home/dima/proc/miner/pixmaps/mine.xpm";
-const gchar PRESSED_XPM[] = "/home/dima/proc/miner/pixmaps/pressed.xpm";
-#endif
-
 /* Global variables */
 
 /* 
