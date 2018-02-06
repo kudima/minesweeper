@@ -448,7 +448,7 @@ void menu_handler(GtkMenuItem *menuitem,
     gboolean is_field_state_changed = FALSE;
 
     df = main_window.df;
-    switch ((gint)data) {
+    switch ((enum menu_items)data) {
 	case MENU_GAME_QUIT:
 	    write_miner_config(&miner_config);
 	    gtk_main_quit();

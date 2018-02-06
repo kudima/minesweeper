@@ -99,7 +99,6 @@ MinesField* mf_new(MinesField* mf, gint width, gint height, gint bombs)
 		i = (gint)(bombed_cell/mines_field->height);
 		j = (gint)(bombed_cell % mines_field->height);
 		
-        printf("%d, %d, %d\n", bombed_cell, i, j);
 		if (!(mines_field->cell[i][j] & BOMBED)) {
 		    mines_field->cell[i][j] |= BOMBED;
 		    mines_field->bombs++;
