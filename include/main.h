@@ -27,53 +27,50 @@
 #define MAIN_H
 #include "display_field.h"
 
-enum menu_items 
+enum menu_items
 {
-    MENU_GAME_QUIT,
-    MENU_GAME_LARGE, 
-    MENU_GAME_MEDIUM,
-    MENU_GAME_SMALL, 
-    MENU_GAME_SCORES, 
-    MENU_GAME_VIDEO
+	MENU_GAME_QUIT,
+	MENU_GAME_LARGE,
+	MENU_GAME_MEDIUM,
+	MENU_GAME_SMALL,
+	MENU_GAME_SCORES,
+	MENU_GAME_VIDEO
 };
 
-enum predefined 
+enum predefined
 {
-    PREDEFINED_SMALL,
-    PREDEFINED_MEDIUM,
-    PREDEFINED_LARGE,
-    PREDEFINED_NONE
+	PREDEFINED_SMALL,
+	PREDEFINED_MEDIUM,
+	PREDEFINED_LARGE,
+	PREDEFINED_NONE
 };
 
 enum modes
 {
-    MODE_NORMAL,
-    MODE_VIDEO
+	MODE_NORMAL,
+	MODE_VIDEO
 };
 
-typedef struct 
+typedef struct
 {
-    DisplayField *df;
-    GtkWidget *widget;
-    GtkWidget *timer_widget;
-    GtkWidget *_3BV_widget;
-    GtkWidget *mines_count_widget;
-    GTimeVal time; /* game duration */
-    gint predefined_state;
-    gint mode; /* Normal or playing video mode */
+	DisplayField *df;
+	GtkWidget *widget;
+	GtkWidget *timer_widget;
+	GtkWidget *_3BV_widget;
+	GtkWidget *mines_count_widget;
+	GTimeVal time; /* game duration */
+	gint predefined_state;
+	gint mode; /* Normal or playing video mode */
 } MainWindow;
 
 typedef struct
 {
-    gint bombs;
-    gint width;
-    gint height;
-    GTimeVal small_time;
-    GTimeVal medium_time;
-    GTimeVal large_time;
+	gint bombs;
+	gint width;
+	gint height;
+	GTimeVal small_time;
+	GTimeVal medium_time;
+	GTimeVal large_time;
 } MinerConfig;
 
-
-
 #endif
-
