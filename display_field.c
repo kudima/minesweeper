@@ -229,32 +229,21 @@ static gboolean display_field_show(GdkDrawable *canvas,
     GdkGC *gc;
     int i, j;
     MinesField *mf;
-    GdkColor color_white;
     GdkColor color_black;
 
     mf = df->field;
 
-    color_white.red = 65535;
-    color_white.blue = 65535;
-    color_white.green = 65535;
- 
     color_black.red = 42000;
     color_black.blue = 41000;
     color_black.green = 41000;
 
     gc = gdk_gc_new(canvas);
-    gdk_gc_set_rgb_fg_color(gc, &color_white);
 
     for (i=0; i<mf->width; i++) {
 		for (j=0; j<mf->height; j++) {
 			if (mf->cell[i][j]&NEED_UPDATE || full_update) {
 			    mf->cell[i][j] &= ~NEED_UPDATE;
 			    
-			    gdk_gc_set_rgb_fg_color(gc, &color_white);
-			    gdk_draw_rectangle(canvas, gc, TRUE, 
-				    i*df->cell_size, j*df->cell_size,
-				    df->cell_size, df->cell_size);
-		
 			    gdk_gc_set_rgb_fg_color(gc, &color_black);
 			    gdk_draw_rectangle(canvas, gc, FALSE, 
 				    i*df->cell_size, j*df->cell_size,
@@ -266,7 +255,9 @@ static gboolean display_field_show(GdkDrawable *canvas,
 					    if (mf_get_number(mf, i, j) != 0) {
 							display_field_show_number(canvas, df, gc, i, j,
 								mf_get_number(mf, i, j));
-					    }
+					    } else {
+                            display_field_show_opened(canvas, df, gc, i, j);
+                        }
 					    continue;
 					} 
 		
@@ -324,6 +315,7 @@ static gboolean display_field_show(GdkDrawable *canvas,
 				    	display_field_show_closed(canvas, df, gc, i, j);
 				    	continue;
 					}
+
 			    }
 			}
 		}
