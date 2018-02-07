@@ -27,8 +27,6 @@
 #define MAIN_H
 #include "display_field.h"
 
-
-
 enum menu_items 
 {
     MENU_GAME_QUIT,
@@ -62,7 +60,7 @@ typedef struct
     GtkWidget *mines_count_widget;
     GTimeVal time; /* game duration */
     gint predefined_state;
-    gint mode; /* Normar or playing video mode */
+    gint mode; /* Normal or playing video mode */
 } MainWindow;
 
 typedef struct
@@ -75,10 +73,6 @@ typedef struct
     GTimeVal large_time;
 } MinerConfig;
 
-/* The main window widget */
-MainWindow main_window;
-/* The application current state */
-MinerConfig miner_config;
 
 
 #endif

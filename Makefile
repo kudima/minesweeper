@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FLAGS = -std=c89 -g -O0
+FLAGS = -std=c99 -g -O0
 GTK2_INC = `pkg-config --cflags gtk+-2.0 glib-2.0` 
 GTK2_LIB = `pkg-config --libs gtk+-2.0 glib-2.0` -lm
 #GTK2_LIB = `pkg-config --libs gtk+-2.0` -lm
