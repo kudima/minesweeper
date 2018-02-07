@@ -29,11 +29,11 @@
 typedef struct
 {
     MinesField field;
-    gint index; // snapshot index
+    gint index; /* snapshot index */
     GTimeVal time;
     gint pointer_x;
     gint pointer_y;
-    gint pointer_mask;//GdkModifierType 
+    gint pointer_mask; /* GdkModifierType */
 } FieldSnapshot;
 
 gboolean video_recorder_function(gpointer *data);
