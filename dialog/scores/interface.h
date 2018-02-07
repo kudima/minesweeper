@@ -27,4 +27,4 @@
  */
 
 #include "../../include/main.h"
-GtkWidget* create_window_score (MinerConfig *config);
+GtkWidget* create_window_score(MinerConfig *config);
