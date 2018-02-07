@@ -42,7 +42,7 @@ typedef struct
     gint opened_count;
     gboolean fully_opened;
     gint marked_count;
-    int **cell; // matrix
+    int **cell; /* matrix */
 } MinesField;
 
 #define max(x, y) ( (x) > (y) ? (x) : (y) )
