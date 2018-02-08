@@ -25,16 +25,14 @@
 #ifndef MINES_FIELD
 #define MINES_FIELD
 #include <gtk/gtk.h>
-typedef enum
-{
+typedef enum {
 	BOMBED = 1,
 	OPENED = 1 << 1,
 	MARKED = 1 << 2,
 	NEED_UPDATE = 1 << 3,
 } SellStatus;
 
-typedef struct
-{
+typedef struct {
 	gint height;
 	gint width;
 	gint bombs;

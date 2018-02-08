@@ -59,59 +59,61 @@ typedef struct
 	StateHandler state_handler;
 	gint cell_size;
 	MinesField *field;
+	gint x_prev;
+	gint y_prev;
 } DisplayField;
 
 /* functions */
 DisplayField* display_field_new(MinesField *mf, GObject *object,
-                                StateHandler state_handler, gint cell_size);
+								StateHandler state_handler, gint cell_size);
 
 gboolean display_field_expose_event(GtkWidget *widget,
-                                    GdkEventExpose *event,
-                                    gpointer df);
+									GdkEventExpose *event,
+									gpointer df);
 
 gboolean display_field_button_event(GtkWidget *widget,
-                                    GdkEventButton *event,
-                                    gpointer data);
+									GdkEventButton *event,
+									gpointer data);
 
 gboolean display_field_motion_event(GtkWidget *widget,
-                                    GdkEventButton *event,
-                                    gpointer data);
+									GdkEventButton *event,
+									gpointer data);
 
 static gboolean display_field_show(GdkDrawable *canvas,
-                                   DisplayField *df, gboolean full_update);
+								   DisplayField *df, gboolean full_update);
 
 void display_field_show_pressed(GdkDrawable *draw,
-                                DisplayField *df, GdkGC *gc,
-                                gint x, gint y);
+								DisplayField *df, GdkGC *gc,
+								gint x, gint y);
 
 void display_field_show_pressed_around(GdkDrawable *draw,
-                                       DisplayField *df, GdkGC *gc,
-                                       gint x, gint y);
+									   DisplayField *df, GdkGC *gc,
+									   gint x, gint y);
 
 void display_field_show_number(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                               gint i, gint j, gint number);
+							   gint i, gint j, gint number);
 
 void display_field_show_closed(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                               gint i, gint j);
+							   gint i, gint j);
 
 void display_field_show_opened(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                               gint i, gint j);
+							   gint i, gint j);
 
 void display_field_show_marked(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                               gint i, gint j);
+							   gint i, gint j);
 
 void display_field_show_boom(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                             gint i, gint j);
+							 gint i, gint j);
 
 void display_field_show_mine(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                             gint i, gint j);
+							 gint i, gint j);
 
 void display_field_show_pressed(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                                gint i, gint j);
+								gint i, gint j);
 
 void display_field_show_xpm(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                            gint i, gint j, const gchar *xpm_file);
+							gint i, gint j, const gchar *xpm_file);
 
 void display_field_show_pixmap(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                               gint i, gint j, GdkPixmap *pixmap);
+							   gint i, gint j, GdkPixmap *pixmap);
 #endif

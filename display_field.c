@@ -35,9 +35,9 @@ void display_field_admit_state(DisplayField *df)
 }
 
 DisplayField* display_field_new(MinesField *mf,
-                                GObject *object,
-                                StateHandler state_handler,
-                                gint cell_size)
+								GObject *object,
+								StateHandler state_handler,
+								gint cell_size)
 {
 	DisplayField *display_field;
 
@@ -49,43 +49,43 @@ DisplayField* display_field_new(MinesField *mf,
 	display_field->state_handler = state_handler;
 
 	gtk_widget_set_size_request(display_field->widget,
-	                            display_field->cell_size * mf->width,
-	                            display_field->cell_size * mf->height);
+								display_field->cell_size * mf->width,
+								display_field->cell_size * mf->height);
 
 	gtk_widget_add_events(display_field->widget, GDK_BUTTON_PRESS_MASK);
 	gtk_widget_add_events(display_field->widget, GDK_BUTTON_RELEASE_MASK);
 	gtk_widget_add_events(display_field->widget, GDK_BUTTON_MOTION_MASK);
 
 	g_signal_connect(G_OBJECT(display_field->widget), "expose_event",
-	                 G_CALLBACK(display_field_expose_event),
-	                 (gpointer)display_field);
+					 G_CALLBACK(display_field_expose_event),
+					 (gpointer)display_field);
 	g_signal_connect(G_OBJECT(display_field->widget), "button_press_event",
-	                 G_CALLBACK(display_field_button_event),
-	                 (gpointer)display_field);
+					 G_CALLBACK(display_field_button_event),
+					 (gpointer)display_field);
 	g_signal_connect(G_OBJECT(display_field->widget), "button_release_event",
-	                 G_CALLBACK(display_field_button_event),
-	                 (gpointer)display_field);
+					 G_CALLBACK(display_field_button_event),
+					 (gpointer)display_field);
 
-	/*  may be I should use it in future in order to change rendering behavor
-	    g_signal_connect(G_OBJECT(display_field->widget), "motion_notify_event",
-		    G_CALLBACK(display_field_motion_event),
-		    (gpointer)display_field); */
+	/*	may be I should use it in future in order to change rendering behavor */
+		g_signal_connect(G_OBJECT(display_field->widget), "motion_notify_event",
+			G_CALLBACK(display_field_motion_event),
+			(gpointer)display_field); 
 
 	return (display_field);
 }
 
 /* events functions */
 gboolean display_field_expose_event(GtkWidget *widget,
-                                    GdkEventExpose *event,
-                                    gpointer df)
+									GdkEventExpose *event,
+									gpointer df)
 {
 	display_field_show(widget->window, df, TRUE);
 	return FALSE;
 }
 
 gboolean display_field_button_event(GtkWidget *widget,
-                                    GdkEventButton *event,
-                                    gpointer data)
+									GdkEventButton *event,
+									gpointer data)
 {
 	DisplayField *df;
 	MinesField *mf;
@@ -112,15 +112,21 @@ gboolean display_field_button_event(GtkWidget *widget,
 	if (mf->is_fail || mf->fully_opened)
 		return FALSE;
 
+	df->x_prev = x;
+	df->y_prev = y;
+
 	if (event->type == GDK_BUTTON_RELEASE) {
-		if (event->button == 1 && !(event->state & GDK_BUTTON3_MASK))
-			action = ACTION_OPEN;
-		if (((event->button == 1) && (event->state & GDK_BUTTON3_MASK))
-		        || ((event->button == 3) && (event->state & GDK_BUTTON1_MASK)))
-			if (mf->opened_count != 0)
+
+			if (event->button == 1 && !(event->state & GDK_BUTTON3_MASK))
+				action = ACTION_OPEN;
+
+			if (((event->button == 1) && (event->state & GDK_BUTTON3_MASK))
+					|| ((event->button == 3) && (event->state & GDK_BUTTON1_MASK)))
+				if (mf->opened_count != 0)
+					action = ACTION_OPEN_AROUND;
+
+			if (event->button == 2 && mf->opened_count != 0)
 				action = ACTION_OPEN_AROUND;
-		if (event->button == 2 && mf->opened_count != 0)
-			action = ACTION_OPEN_AROUND;
 	}
 
 	if (event->type == GDK_BUTTON_PRESS) {
@@ -129,18 +135,21 @@ gboolean display_field_button_event(GtkWidget *widget,
 	}
 
 	if (event->type == GDK_BUTTON_PRESS
-	        || event->type == GDK_2BUTTON_PRESS
-	        || event->type == GDK_3BUTTON_PRESS) {
+			|| event->type == GDK_2BUTTON_PRESS
+			|| event->type == GDK_3BUTTON_PRESS) {
+
+
 		if (event->button == 2)
 			pressed_state = PRESSED_STATE_AROUND;
 		else if ((event->button == 3)
-		         && (event->state & GDK_BUTTON1_MASK))
+				 && (event->state & GDK_BUTTON1_MASK))
 			pressed_state = PRESSED_STATE_AROUND;
 		else if ((event->button == 1)
-		         && (event->state & GDK_BUTTON3_MASK))
+				 && (event->state & GDK_BUTTON3_MASK))
 			pressed_state = PRESSED_STATE_AROUND;
 		else if (event->button == 1)
 			pressed_state = PRESSED_STATE_ALONE;
+
 	}
 
 	switch (action) {
@@ -158,11 +167,11 @@ gboolean display_field_button_event(GtkWidget *widget,
 	switch (pressed_state) {
 	case PRESSED_STATE_ALONE:
 		display_field_show_pressed(widget->window, df,
-		                           gdk_gc_new(widget->window), x, y);
+								   gdk_gc_new(widget->window), x, y);
 		break;
 	case PRESSED_STATE_AROUND:
 		display_field_show_pressed_around(widget->window, df,
-		                                  gdk_gc_new(widget->window), x, y);
+										  gdk_gc_new(widget->window), x, y);
 	}
 
 	if (pressed_state == PRESSED_NONE)
@@ -176,55 +185,71 @@ gboolean display_field_button_event(GtkWidget *widget,
 }
 
 gboolean display_field_motion_event(GtkWidget *widget,
-                                    GdkEventButton *event,
-                                    gpointer data)
+									GdkEventButton *event,
+									gpointer data)
 {
-	/*   gint x, y;
-	   DisplayField *df;
-	   MinesField *mf;
-	   int pressed_state;
+	gint x, y;
+	DisplayField *df;
+	MinesField *mf;
+	int pressed_state = PRESSED_NONE;
 
-	   df = data;
-	   mf = df->field;
-	   x = (gint)event->x/df->cell_size;
-	   y = (gint)event->y/df->cell_size;
+	df = data;
+	mf = df->field;
+	x = (gint)event->x/df->cell_size;
+	y = (gint)event->y/df->cell_size;
 
-	   if ( (x != prev_x) && (y != prev_y) ) {
-	if (event->type == GDK_BUTTON_PRESS) {
-	    if (event->button == 1)
-		pressed_state = PRESSED_STATE_ALONE;
-	    if (event->button == 2)
-		pressed_state = PRESSED_STATE_AROUND;
-	    if ( (event->button == 3)
-		    && (event->state&GDK_BUTTON1_MASK) )
-		pressed_state == PRESSED_STATE_AROUND;
-	    if ( (event->button == 1)
-		    && (event->state&GDK_BUTTON3_MASK) )
-		pressed_state == PRESSED_STATE_AROUND;
+	if (x == mf->width)
+		x -= 1;
+
+	if (y == mf->height)
+		y -= 1;
+
+	if (x > mf->width || y > mf->height) {
+		fprintf(stderr, "cell coordinates are out of the box (%d, %d)\n", x, y);
+		return FALSE;
 	}
-	if (prev_state == PRESSED_STATE_ALONE)
-	    mf_set_state(mf, prev_x, prev_y, PRESSED);
-	if (prev_state == PRESSED_STATE_AROUND)
-	    mf_set_state_around(mf, prev_x, prev_y, PRESSED);
+
+	if ( (x == df->x_prev) && (y == df->y_prev) ) 
+		return FALSE;
+
+	if (event->type == GDK_MOTION_NOTIFY) {
+
+		if (event->state & GDK_BUTTON1_MASK)
+			pressed_state = PRESSED_STATE_ALONE;
+
+		if ((event->state & GDK_BUTTON1_MASK) && (event->state & GDK_BUTTON3_MASK))
+			pressed_state = PRESSED_STATE_AROUND;
+	}
+
+	/* render the original state without any hints about cells we want to open */
+	display_field_show(widget->window, df, FALSE);
+
+	/* draw the hints */
 	switch (pressed_state) {
-	    case PRESSED_STATE_ALONE:
-		mf_set_state(mf, x, y, PRESSED);
+		case PRESSED_STATE_ALONE:
+			display_field_show_pressed(widget->window, df,
+									   gdk_gc_new(widget->window), x, y);
 		break;
-	    case PRESSED_STATE_AROUND:
-		mf_set_state_around(mf, x, y, PRESSED);
+		case PRESSED_STATE_AROUND:
+			display_field_show_pressed_around(widget->window, df,
+											  gdk_gc_new(widget->window), x, y);
 		break;
 	}
-	prev_x = x;
-	prev_y = y;
-	prev_state = pressed_state;
-	display_field_refresh(widget, df);
-	   }*/
+
+	df->x_prev = x;
+	df->y_prev = y;
+
+	if (mf->is_fail || mf->fully_opened)
+		display_field_show(widget->window, df, TRUE);
+
+	display_field_admit_state(df);
+
 	return FALSE;
 }
 
 /* display functions */
 static gboolean display_field_show(GdkDrawable *canvas,
-                                   DisplayField *df, gboolean full_update)
+								   DisplayField *df, gboolean full_update)
 {
 	GdkGC *gc;
 	int i, j;
@@ -246,15 +271,15 @@ static gboolean display_field_show(GdkDrawable *canvas,
 
 				gdk_gc_set_rgb_fg_color(gc, &color_black);
 				gdk_draw_rectangle(canvas, gc, FALSE,
-				                   i * df->cell_size, j * df->cell_size,
-				                   df->cell_size, df->cell_size);
+								   i * df->cell_size, j * df->cell_size,
+								   df->cell_size, df->cell_size);
 
 				if (!(mf->is_fail)) {
 
 					if (mf->cell[i][j]&OPENED) {
 						if (mf_get_number(mf, i, j) != 0) {
 							display_field_show_number(canvas, df, gc, i, j,
-							                          mf_get_number(mf, i, j));
+													  mf_get_number(mf, i, j));
 						} else
 							display_field_show_opened(canvas, df, gc, i, j);
 						continue;
@@ -271,46 +296,46 @@ static gboolean display_field_show(GdkDrawable *canvas,
 				if (mf->is_fail) {
 
 					if ((mf->cell[i][j]&OPENED) &&
-					        (mf->cell[i][j]&BOMBED)) {
+							(mf->cell[i][j]&BOMBED)) {
 						display_field_show_boom(canvas, df, gc, i, j);
 						continue;
 					}
 
 					if ((mf->cell[i][j]&OPENED) &&
-					        !(mf->cell[i][j]&BOMBED)) {
+							!(mf->cell[i][j]&BOMBED)) {
 
 						if (mf_get_number(mf, i, j) != 0)
 							display_field_show_number(canvas, df, gc, i, j,
-							                          mf_get_number(mf, i, j));
+													  mf_get_number(mf, i, j));
 
 						continue;
 					}
 
 					if (!(mf->cell[i][j]&OPENED) &&
-					        (mf->cell[i][j]&BOMBED)) {
+							(mf->cell[i][j]&BOMBED)) {
 						display_field_show_mine(canvas, df, gc, i, j);
 						continue;
 					}
 
 					if ((mf->cell[i][j]&MARKED) &&
-					        (mf->cell[i][j]&BOMBED)) {
+							(mf->cell[i][j]&BOMBED)) {
 						display_field_show_marked(canvas, df, gc, i, j);
 						continue;
 					}
 
 					if ((mf->cell[i][j]&MARKED) &&
-					        !(mf->cell[i][j]&BOMBED)) {
+							!(mf->cell[i][j]&BOMBED)) {
 						gdk_gc_set_rgb_fg_color(gc, &color_black);
 						gdk_draw_line(canvas, gc, i * df->cell_size, j * df->cell_size,
-						              (i + 1)*df->cell_size, (j + 1)*df->cell_size);
+									  (i + 1)*df->cell_size, (j + 1)*df->cell_size);
 						gdk_draw_line(canvas, gc, (i + 1)*df->cell_size, j * df->cell_size,
-						              i * df->cell_size, (j + 1)*df->cell_size);
+									  i * df->cell_size, (j + 1)*df->cell_size);
 						continue;
 					}
 
 					if (!(mf->cell[i][j]&OPENED) &&
-					        !(mf->cell[i][j]&BOMBED) &&
-					        !(mf->cell[i][j]&MARKED)) {
+							!(mf->cell[i][j]&BOMBED) &&
+							!(mf->cell[i][j]&MARKED)) {
 						display_field_show_closed(canvas, df, gc, i, j);
 						continue;
 					}
@@ -326,67 +351,67 @@ static gboolean display_field_show(GdkDrawable *canvas,
 }
 
 void display_field_show_number(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                               gint i, gint j, gint number)
+							   gint i, gint j, gint number)
 {
 	gdk_draw_drawable(draw, gc, pixmap_numbers[number - 1], 0, 0,
-	                  (gint)i * df->cell_size + 1, (gint)j * df->cell_size + 1,
-	                  df->cell_size - 1, df->cell_size - 1);
+					  (gint)i * df->cell_size + 1, (gint)j * df->cell_size + 1,
+					  df->cell_size - 1, df->cell_size - 1);
 }
 
 void display_field_show_closed(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                               gint i, gint j)
+							   gint i, gint j)
 {
 	display_field_show_pixmap(draw, df, gc, i, j, pixmap_closed);
 }
 
 void display_field_show_opened(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                               gint i, gint j)
+							   gint i, gint j)
 {
 	display_field_show_pixmap(draw, df, gc, i, j, pixmap_opened);
 }
 
 void display_field_show_marked(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                               gint i, gint j)
+							   gint i, gint j)
 {
 	display_field_show_pixmap(draw, df, gc, i, j, pixmap_marked);
 }
 
 void display_field_show_boom(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                             gint i, gint j)
+							 gint i, gint j)
 {
 	display_field_show_pixmap(draw, df, gc, i, j, pixmap_boom);
 }
 
 void display_field_show_mine(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                             gint i, gint j)
+							 gint i, gint j)
 {
 	display_field_show_pixmap(draw, df, gc, i, j, pixmap_mine);
 }
 
 void display_field_show_pressed(GdkDrawable *draw,
-                                DisplayField *df, GdkGC *gc,
-                                gint x, gint y)
+								DisplayField *df, GdkGC *gc,
+								gint x, gint y)
 {
 	MinesField *mf;
 
 	mf = df->field;
 
 	if ((x < 0 || x >= mf->width)
-	        || (y < 0 || y >= mf->height))
+			|| (y < 0 || y >= mf->height))
 		return;
 
 	if (!(mf->cell[x][y]&OPENED)
-	        && !(mf->cell[x][y]&MARKED)) {
+			&& !(mf->cell[x][y]&MARKED)) {
 		mf->cell[x][y] |= NEED_UPDATE;
 		gdk_draw_drawable(draw, gc, pixmap_pressed, 0, 0,
-		                  (gint)x * df->cell_size + 1, (gint)y * df->cell_size + 1,
-		                  df->cell_size - 1, df->cell_size - 1);
+						  (gint)x * df->cell_size + 1, (gint)y * df->cell_size + 1,
+						  df->cell_size - 1, df->cell_size - 1);
 	}
 }
 
 void display_field_show_pressed_around(GdkDrawable *draw,
-                                       DisplayField *df, GdkGC *gc,
-                                       gint x, gint y)
+									   DisplayField *df, GdkGC *gc,
+									   gint x, gint y)
 {
 	MinesField *mf;
 	int i, j;
@@ -394,37 +419,37 @@ void display_field_show_pressed_around(GdkDrawable *draw,
 	mf = df->field;
 	mf = df->field;
 	if ((x < 0 || x >= mf->width)
-	        || (y < 0 || y >= mf->height))
+			|| (y < 0 || y >= mf->height))
 		return;
 	for (i = max(0, x - 1); i < min(mf->width, x + 2); i++)
 		for (j = max(0, y - 1); j < min(mf->height, y + 2); j++) {
 			if (!(mf->cell[i][j]&OPENED) &&
-			        !(mf->cell[i][j]&MARKED)) {
+					!(mf->cell[i][j]&MARKED)) {
 				mf->cell[i][j] |= NEED_UPDATE;
 				gdk_draw_drawable(draw, gc, pixmap_pressed, 0, 0,
-				                  (gint)i * df->cell_size + 1, (gint)j * df->cell_size + 1,
-				                  df->cell_size - 1, df->cell_size - 1);
+								  (gint)i * df->cell_size + 1, (gint)j * df->cell_size + 1,
+								  df->cell_size - 1, df->cell_size - 1);
 			}
 		}
 }
 
 void display_field_show_xpm(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                            gint i, gint j, const gchar *xpm_file)
+							gint i, gint j, const gchar *xpm_file)
 {
 	GdkPixmap *pixmap;
 
 	pixmap = gdk_pixmap_create_from_xpm(draw, NULL, NULL, xpm_file);
 	gdk_draw_drawable(draw, gc, pixmap, 0, 0,
-	                  (gint)i * df->cell_size + 1, (gint)j * df->cell_size + 1,
-	                  df->cell_size - 1, df->cell_size - 1);
+					  (gint)i * df->cell_size + 1, (gint)j * df->cell_size + 1,
+					  df->cell_size - 1, df->cell_size - 1);
 	g_object_unref(G_OBJECT(pixmap));
 }
 
 void display_field_show_pixmap(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-                               gint i, gint j, GdkPixmap *pixmap)
+							   gint i, gint j, GdkPixmap *pixmap)
 {
 	gdk_draw_drawable(draw, gc, pixmap, 0, 0,
-	                  (gint)i * df->cell_size + 1, (gint)j * df->cell_size + 1,
-	                  df->cell_size - 1, df->cell_size - 1);
+					  (gint)i * df->cell_size + 1, (gint)j * df->cell_size + 1,
+					  df->cell_size - 1, df->cell_size - 1);
 }
 
