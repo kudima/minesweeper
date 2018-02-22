@@ -165,10 +165,10 @@ gboolean mf_set_state(MinesField *mf,
 
 		mf->cell[x][y] |= OPENED;
 		mf->opened_count++;
-		if (mf_get_number(mf, x, y) == 0 && mf_get_marked(mf, x, y) == 0)
+		if (mf_get_number(mf, x, y) == 0)
 			for (i = max(0, x - 1); i < min(mf->width, x + 2); i++)
 				for (j = max(0, y - 1); j < min(mf->height, y + 2); j++)
-					if (!(mf->cell[i][j]&OPENED))
+					if (!(mf->cell[i][j]&OPENED) && !(mf->cell[i][j]&MARKED))
 						mf_set_state(mf, i, j, OPENED);
 	}
 
