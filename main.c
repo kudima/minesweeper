@@ -22,12 +22,18 @@
  * SOFTWARE.
  */
 
+#define _GNU_SOURCE
+
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <stdio.h>
 #include <math.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <libgen.h>
 
 #include "include/display_field.h"
 #include "include/mines_field.h"
@@ -539,7 +545,7 @@ int main(int argc, char *argv[])
 	gint i;
 	gchar xpm_file_name[0x100];
 
-
+	chdir(dirname(realpath(argv[0], NULL)));
 	read_miner_conifg(&miner_config);
 
 	gtk_init(&argc, &argv);
