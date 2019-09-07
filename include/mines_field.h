@@ -30,6 +30,7 @@ typedef enum {
 	OPENED = 1 << 1,
 	MARKED = 1 << 2,
 	NEED_UPDATE = 1 << 3,
+	PRESSED = 1 << 4,
 } SellStatus;
 
 typedef struct {
@@ -70,4 +71,8 @@ gboolean mf_set_state_around(MinesField *mf,
 
 void mf_new_field(MinesField *mf);
 gint mf_get_3BV(MinesField *mf);
+static inline gboolean mf_includes(MinesField *mf, gint x, gint y) 
+{
+	return !((x < 0 || x >= mf->width) || (y < 0 || y >= mf->height));
+}
 #endif

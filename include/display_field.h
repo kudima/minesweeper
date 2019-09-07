@@ -27,13 +27,13 @@
 #include <gtk/gtk.h>
 #include "mines_field.h"
 
-GdkPixmap *pixmap_opened;
-GdkPixmap *pixmap_marked;
-GdkPixmap *pixmap_closed;
-GdkPixmap *pixmap_boom;
-GdkPixmap *pixmap_mine;
-GdkPixmap *pixmap_pressed;
-GdkPixmap *pixmap_numbers[8];
+extern GdkPixmap *pixmap_opened;
+extern GdkPixmap *pixmap_marked;
+extern GdkPixmap *pixmap_closed;
+extern GdkPixmap *pixmap_boom;
+extern GdkPixmap *pixmap_mine;
+extern GdkPixmap *pixmap_pressed;
+extern GdkPixmap *pixmap_numbers[8];
 
 enum actions
 {
@@ -61,7 +61,20 @@ typedef struct
 	MinesField *field;
 	gint x_prev;
 	gint y_prev;
+	gboolean full_update;
 } DisplayField;
+
+#define DF_AREA_WIDTH(area) ((area)->x_bottom - (area)->x_top)
+#define DF_AREA_HEIGHT(area) ((area)->y_bottom - (area)->y_top)
+
+/* determines the area we want to redraw when an action happend
+ * on a minefield */
+typedef struct {
+		gint x_top;
+		gint y_top;
+		gint x_bottom;
+		gint y_bottom;
+} DFDrawArea;
 
 /* functions */
 DisplayField* display_field_new(MinesField *mf, GObject *object,
@@ -80,15 +93,11 @@ gboolean display_field_motion_event(GtkWidget *widget,
 									gpointer data);
 
 static gboolean display_field_show(GdkDrawable *canvas,
-								   DisplayField *df, gboolean full_update);
-
-void display_field_show_pressed(GdkDrawable *draw,
-								DisplayField *df, GdkGC *gc,
-								gint x, gint y);
+								   DisplayField *df);
 
 void display_field_show_pressed_around(GdkDrawable *draw,
 									   DisplayField *df, GdkGC *gc,
-									   gint x, gint y);
+									   gint x, gint y, DFDrawArea *area);
 
 void display_field_show_number(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
 							   gint i, gint j, gint number);
@@ -109,7 +118,7 @@ void display_field_show_mine(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
 							 gint i, gint j);
 
 void display_field_show_pressed(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
-								gint i, gint j);
+								gint i, gint j, DFDrawArea *area);
 
 void display_field_show_xpm(GdkDrawable *draw, DisplayField *df, GdkGC *gc,
 							gint i, gint j, const gchar *xpm_file);
