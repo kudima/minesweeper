@@ -96,9 +96,24 @@ void display_field_queue_draw(DisplayField *df, gboolean full_update)
 		gtk_widget_queue_draw(df->widget);
 }
 
+void display_field_mark_cells_in_area(DisplayField *df, DFDrawArea *area)
+{
+	gint i_top = area->x_top/df->cell_size;
+	gint j_top = area->y_top/df->cell_size;
+	gint i_bottom = area->x_bottom/df->cell_size;
+	gint j_bottom = area->y_bottom/df->cell_size;
+
+	for (gint i=i_top; i<i_bottom; i++) {
+		for (gint j=j_top; j<j_bottom; j++) {
+			df->field->cell[i][j] |= NEED_UPDATE;
+		}
+	}
+}
+
 void display_field_queue_draw_area(DisplayField *df, DFDrawArea *area)
 {
 		df->full_update = FALSE;
+		display_field_mark_cells_in_area(df, area);
 		gtk_widget_queue_draw_area(df->widget, area->x_top, area->y_top,
 						DF_AREA_WIDTH(area), DF_AREA_HEIGHT(area));
 }
