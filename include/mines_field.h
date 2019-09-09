@@ -31,7 +31,7 @@ typedef enum {
 	MARKED = 1 << 2,
 	NEED_UPDATE = 1 << 3,
 	PRESSED = 1 << 4,
-} SellStatus;
+} CellStatus;
 
 typedef struct {
 	gint height;
@@ -43,6 +43,8 @@ typedef struct {
 	gint marked_count;
 	int **cell; /* matrix */
 } MinesField;
+
+typedef void (*mf_callback_t)(void *, gint i, gint j);
 
 #define max(x, y) ( (x) > (y) ? (x) : (y) )
 #define min(x, y) ( (x) < (y) ? (x) : (y) )
@@ -56,7 +58,9 @@ gint mf_get_marked(MinesField *mf, gint x, gint y);
 
 gboolean mf_set_state(MinesField *mf,
                       gint x, gint y,
-                      SellStatus status);
+                      CellStatus status,
+					  void *, mf_callback_t
+					  );
 /**
  * df_set_state_around(gint x, gint y)
  *
@@ -67,7 +71,8 @@ gboolean mf_set_state(MinesField *mf,
  */
 gboolean mf_set_state_around(MinesField *mf,
                              gint x, gint y,
-                             gint state);
+                             CellStatus status,
+							 void *, mf_callback_t);
 
 void mf_new_field(MinesField *mf);
 gint mf_get_3BV(MinesField *mf);

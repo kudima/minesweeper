@@ -64,8 +64,13 @@ typedef struct
 	gboolean full_update;
 } DisplayField;
 
-#define DF_AREA_WIDTH(area) ((area)->x_bottom - (area)->x_top)
-#define DF_AREA_HEIGHT(area) ((area)->y_bottom - (area)->y_top)
+
+#ifndef ABS
+#define ABS(x) (x >= 0 ? x : -x)
+#endif
+
+#define DF_AREA_WIDTH(area) ABS((area)->x_bottom - (area)->x_top)
+#define DF_AREA_HEIGHT(area) ABS((area)->y_bottom - (area)->y_top)
 
 /* determines the area we want to redraw when an action happend
  * on a minefield */
@@ -74,6 +79,7 @@ typedef struct {
 		gint y_top;
 		gint x_bottom;
 		gint y_bottom;
+		gint cell_size;
 } DFDrawArea;
 
 /* functions */

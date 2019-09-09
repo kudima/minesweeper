@@ -147,12 +147,11 @@ gint mf_get_marked(MinesField *mf, gint x, gint y)
 	return marked_count;
 }
 
-gboolean mf_set_state(MinesField *mf,
-                      gint x, gint y,
-                      SellStatus status)
+gboolean mf_set_state(MinesField *mf, gint x, gint y,
+                      CellStatus status, void *cb_data, mf_callback_t cb)
 {
 	int i, j;
-	SellStatus prev_status;
+	CellStatus prev_status;
 
 	if ((x < 0 || x >= mf->width)
 	        || (y < 0 || y >= mf->height))
@@ -169,7 +168,7 @@ gboolean mf_set_state(MinesField *mf,
 			for (i = max(0, x - 1); i < min(mf->width, x + 2); i++)
 				for (j = max(0, y - 1); j < min(mf->height, y + 2); j++)
 					if (!(mf->cell[i][j]&OPENED) && !(mf->cell[i][j]&MARKED))
-						mf_set_state(mf, i, j, OPENED);
+						mf_set_state(mf, i, j, OPENED, cb_data, cb);
 	}
 
 	if ((status & MARKED) && (mf->cell[x][y]&MARKED)) {
@@ -183,7 +182,7 @@ gboolean mf_set_state(MinesField *mf,
 	if ((mf->cell[x][y]&OPENED) && (mf->cell[x][y]&BOMBED)) {
 		if (mf->opened_count <= 1) {
 			mf_new_field(mf);
-			mf_set_state(mf, x, y, OPENED);
+			mf_set_state(mf, x, y, OPENED, cb_data, cb);
 		} else {
 			mf->is_fail = TRUE;
 			return TRUE;
@@ -196,12 +195,15 @@ gboolean mf_set_state(MinesField *mf,
 	if ((mf->opened_count >= mf->height * mf->width - mf->bombs))
 		mf->fully_opened = TRUE;
 
+	if (cb)
+		cb(cb_data, x, y);
+
 	return TRUE;
 }
 
-gboolean mf_set_state_around(MinesField *mf,
-                             gint x, gint y,
-                             gint state)
+gboolean mf_set_state_around(MinesField *mf, gint x, gint y,
+                             CellStatus state,
+							 void *cb_data, mf_callback_t cb)
 {
 	int i, j;
 
@@ -214,7 +216,7 @@ gboolean mf_set_state_around(MinesField *mf,
 		for (i = max(0, x - 1); i < min(mf->width, x + 2); i++)
 			for (j = max(0, y - 1); j < min(mf->height, y + 2); j++)
 				if (!(mf->cell[i][j]&OPENED) && !(mf->cell[i][j]&MARKED))
-					mf_set_state(mf, i, j, state);
+					mf_set_state(mf, i, j, state, cb_data, cb);
 	}
 
 	return TRUE;
