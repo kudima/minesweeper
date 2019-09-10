@@ -391,6 +391,7 @@ void field_change_status_handler(GObject *widget,
 {
 	char string[0x10];
 
+
 	if (mf->is_fail)
 		gtk_label_set_text(GTK_LABEL(widget), "FAIL");
 
@@ -406,6 +407,7 @@ void field_change_status_handler(GObject *widget,
 	if (mf->opened_count > 0 && !mf->is_fail && !mf->fully_opened
 	        && main_window.time.tv_sec == 0
 	        && main_window.time.tv_usec == 0) {
+
 		sprintf(string, "3BV: %3.3d", mf_get_3BV(mf));
 		gtk_label_set_text(GTK_LABEL(main_window._3BV_widget), string);
 		g_timeout_add(5, (GSourceFunc)timer_function, (gpointer)mf);

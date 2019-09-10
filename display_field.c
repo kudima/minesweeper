@@ -73,8 +73,6 @@ DisplayField* display_field_new(MinesField *mf,
 	gtk_widget_add_events(display_field->widget, GDK_BUTTON_RELEASE_MASK);
 	gtk_widget_add_events(display_field->widget, GDK_BUTTON_MOTION_MASK);
 
-	printf("has gtk_widget_get_has_window: %d\n", gtk_widget_get_has_window(display_field->widget));
-
 	g_signal_connect(G_OBJECT(display_field->widget), "expose-event",
 					 G_CALLBACK(display_field_expose_event),
 					 (gpointer)display_field);
@@ -154,14 +152,11 @@ gboolean display_field_button_event(GtkWidget *widget,
 		y -= 1;
 
 	if (x > mf->width || y > mf->height) {
-		fprintf(stderr, "cell coordinates are out of the box (%d, %d)\n", x, y);
 		return FALSE;
 	}
 
 	if (mf->is_fail || mf->fully_opened)
 		return FALSE;
-
-	printf("button %d\n", event->button);
 
 	df->x_prev = x;
 	df->y_prev = y;
@@ -172,9 +167,10 @@ gboolean display_field_button_event(GtkWidget *widget,
 				action = ACTION_OPEN;
 
 			if (((event->button == 1) && (event->state & GDK_BUTTON3_MASK))
-					|| ((event->button == 3) && (event->state & GDK_BUTTON1_MASK)))
+					|| ((event->button == 3) && (event->state & GDK_BUTTON1_MASK))) {
 				if (mf->opened_count != 0)
 					action = ACTION_OPEN_AROUND;
+			}
 
 			if (event->button == 2) {
 				display_field_unpress_around(df, df->x_prev, df->y_prev, &area);
@@ -205,11 +201,9 @@ gboolean display_field_button_event(GtkWidget *widget,
 
 	}
 
-	printf("action: %d\n", action);
-	if (action >= 0) { 
+	if (action >= 0) {
 		switch (action) {
 		case ACTION_OPEN:
-			printf("set state opened %d, %d\n", x, y);
 			mf_set_state(mf, x, y, OPENED, &area,
 						   (mf_callback_t)display_field_update_draw_area);
 			break;
@@ -226,14 +220,14 @@ gboolean display_field_button_event(GtkWidget *widget,
 		//display_field_request_update(df, x, y, &area);
 	}
 
-	printf("pressed: %d\n", pressed_state);
 	switch (pressed_state) {
 	case PRESSED_STATE_ALONE:
-		printf("state alone %d, %d\n", x, y);
 		display_field_show_pressed(widget->window, df,
 								   gdk_gc_new(widget->window), x, y, &area);
 		break;
 	case PRESSED_STATE_AROUND:
+		if (mf->opened_count == 0)
+			break;
 		display_field_unpress_around(df, df->x_prev, df->y_prev, &area);
 		display_field_show_pressed_around(widget->window, df,
 										  gdk_gc_new(widget->window), x, y, &area);
@@ -245,9 +239,6 @@ gboolean display_field_button_event(GtkWidget *widget,
 	if (mf->is_fail || mf->fully_opened) {
 		display_field_queue_draw(df, TRUE);
 	} else {
-		printf("pressed: %d, %d\n", x, y);
-		printf("area: (%d, %d), (%d, %d)\n", area.x_top, area.y_top,
-						DF_AREA_WIDTH(&area), DF_AREA_HEIGHT(&area));
 		display_field_queue_draw_area(df, &area);
 	}
 
@@ -277,7 +268,6 @@ gboolean display_field_motion_event(GtkWidget *widget,
 		y -= 1;
 
 	if (!mf_includes(mf, x, y)) {
-		fprintf(stderr, "cell coordinates are out of the box (%d, %d)\n", x, y);
 		display_field_unpress_around(df, df->x_prev, df->y_prev, &area);
 		display_field_queue_draw_area(df, &area);
 		return FALSE;
@@ -290,13 +280,16 @@ gboolean display_field_motion_event(GtkWidget *widget,
 
 		if (event->state & GDK_BUTTON1_MASK) {
 			pressed_state = PRESSED_STATE_ALONE;
-		} else if ((event->state & GDK_BUTTON1_MASK) && (event->state & GDK_BUTTON3_MASK)) {
+		}
+
+		if ((event->state & GDK_BUTTON1_MASK) && (event->state & GDK_BUTTON3_MASK)) {
 			pressed_state = PRESSED_STATE_AROUND;
-		} else if (event->state & GDK_BUTTON2_MASK) {
+		}
+
+		if (event->state & GDK_BUTTON2_MASK) {
 			pressed_state = PRESSED_STATE_AROUND;
 		}
 	}
-
 
 	/* draw the hints */
 	switch (pressed_state) {
@@ -307,6 +300,9 @@ gboolean display_field_motion_event(GtkWidget *widget,
 			display_field_request_update(df, df->x_prev, df->y_prev, &area);
 		break;
 		case PRESSED_STATE_AROUND:
+			if (mf->opened_count == 0)
+				break;
+
 			display_field_unpress_around(df, df->x_prev, df->y_prev, &area);
 			display_field_show_pressed_around(widget->window, df,
 											  gdk_gc_new(widget->window), x, y, &area);
@@ -343,14 +339,11 @@ static gboolean display_field_show(GdkDrawable *canvas,
 	color_black.green = 41000;
 
 	gc = gdk_gc_new(canvas);
-	printf("draw\n");
 
 	for (i = 0; i < mf->width; i++) {
 		for (j = 0; j < mf->height; j++) {
 			if (mf->cell[i][j]&NEED_UPDATE || df->full_update) {
 				mf->cell[i][j] &= ~NEED_UPDATE;
-
-				printf("redraw for: %d, %d\n", i, j);
 
 				gdk_gc_set_rgb_fg_color(gc, &color_black);
 				gdk_draw_rectangle(canvas, gc, FALSE,
@@ -375,7 +368,6 @@ static gboolean display_field_show(GdkDrawable *canvas,
 
 
 					if (mf->cell[i][j]&PRESSED) {
-						printf("draw presed: (%d, %d)\n", i, j);
 						gdk_draw_drawable(canvas, gc, pixmap_pressed, 0, 0,
 										  (gint)i * df->cell_size + 1, (gint)j * df->cell_size + 1,
 										  df->cell_size - 1, df->cell_size - 1);
