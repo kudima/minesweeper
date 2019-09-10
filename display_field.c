@@ -176,8 +176,11 @@ gboolean display_field_button_event(GtkWidget *widget,
 				if (mf->opened_count != 0)
 					action = ACTION_OPEN_AROUND;
 
-			if (event->button == 2 && mf->opened_count != 0)
-				action = ACTION_OPEN_AROUND;
+			if (event->button == 2) {
+				display_field_unpress_around(df, df->x_prev, df->y_prev, &area);
+				if (mf->opened_count != 0)
+					action = ACTION_OPEN_AROUND;
+			}
 	}
 
 	if (event->type == GDK_BUTTON_PRESS) {
@@ -280,16 +283,18 @@ gboolean display_field_motion_event(GtkWidget *widget,
 		return FALSE;
 	}
 
-	if ( (x == df->x_prev) && (y == df->y_prev) ) 
+	if ( (x == df->x_prev) && (y == df->y_prev) )
 		return FALSE;
 
 	if (event->type == GDK_MOTION_NOTIFY) {
 
-		if (event->state & GDK_BUTTON1_MASK)
+		if (event->state & GDK_BUTTON1_MASK) {
 			pressed_state = PRESSED_STATE_ALONE;
-
-		if ((event->state & GDK_BUTTON1_MASK) && (event->state & GDK_BUTTON3_MASK))
+		} else if ((event->state & GDK_BUTTON1_MASK) && (event->state & GDK_BUTTON3_MASK)) {
 			pressed_state = PRESSED_STATE_AROUND;
+		} else if (event->state & GDK_BUTTON2_MASK) {
+			pressed_state = PRESSED_STATE_AROUND;
+		}
 	}
 
 
