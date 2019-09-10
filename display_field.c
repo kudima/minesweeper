@@ -151,7 +151,9 @@ gboolean display_field_button_event(GtkWidget *widget,
 	if (y == mf->height)
 		y -= 1;
 
-	if (x > mf->width || y > mf->height) {
+	if (!mf_includes(mf, x, y)) {
+		display_field_unpress_around(df, df->x_prev, df->y_prev, &area);
+		display_field_queue_draw_area(df, &area);
 		return FALSE;
 	}
 
