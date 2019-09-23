@@ -392,6 +392,8 @@ static gboolean display_field_show(GdkDrawable *canvas,
 						if (mf_get_number(mf, i, j) != 0)
 							display_field_show_number(canvas, df, gc, i, j,
 													  mf_get_number(mf, i, j));
+						else
+							display_field_show_opened(canvas, df, gc, i, j);
 
 						continue;
 					}
