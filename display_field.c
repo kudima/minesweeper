@@ -124,6 +124,7 @@ gboolean display_field_expose_event(GtkWidget *widget,
 									GdkEventExpose *event,
 									gpointer df)
 {
+	((DisplayField *)df)->full_update = TRUE;
 	display_field_show(widget->window, df);
 	return FALSE;
 }
